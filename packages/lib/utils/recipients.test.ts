@@ -23,20 +23,6 @@ describe('recipient signing order helpers', () => {
     ]);
   });
 
-  it('excludes recipients soft-deleted from the document', () => {
-    const recipients = [
-      { id: 1, role: RecipientRole.SIGNER, signingStatus: SigningStatus.NOT_SIGNED, documentDeletedAt: null },
-      {
-        id: 2,
-        role: RecipientRole.SIGNER,
-        signingStatus: SigningStatus.NOT_SIGNED,
-        documentDeletedAt: new Date('2026-01-01T00:00:00.000Z'),
-      },
-    ];
-
-    expect(getPendingSigners({ status: DocumentStatus.PENDING, recipients }).map((recipient) => recipient.id)).toEqual([1]);
-  });
-
   it.each([
     DocumentStatus.DRAFT,
     DocumentStatus.COMPLETED,

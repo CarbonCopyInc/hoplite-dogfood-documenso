@@ -22,9 +22,7 @@ export const isCcRecipient = (recipient: Pick<Recipient, 'role'>) => {
   return recipient.role === RecipientRole.CC;
 };
 
-export const getPendingSigners = <
-  T extends Pick<Recipient, 'role' | 'signingStatus'> & Partial<Pick<Recipient, 'documentDeletedAt'>>,
->({
+export const getPendingSigners = <T extends Pick<Recipient, 'role' | 'signingStatus'>>({
   status,
   recipients,
 }: {
@@ -36,10 +34,7 @@ export const getPendingSigners = <
   }
 
   return recipients.filter(
-    (recipient) =>
-      recipient.role !== RecipientRole.CC &&
-      recipient.signingStatus === SigningStatus.NOT_SIGNED &&
-      recipient.documentDeletedAt == null,
+    (recipient) => recipient.role !== RecipientRole.CC && recipient.signingStatus === SigningStatus.NOT_SIGNED,
   );
 };
 
