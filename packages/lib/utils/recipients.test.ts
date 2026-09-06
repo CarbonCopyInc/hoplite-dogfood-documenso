@@ -1,4 +1,4 @@
-import { RecipientRole, SigningStatus } from '@prisma/client';
+import { DocumentStatus, RecipientRole, SigningStatus } from '@prisma/client';
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -18,7 +18,20 @@ describe('recipient signing order helpers', () => {
       { id: 5, role: RecipientRole.CC, signingStatus: SigningStatus.NOT_SIGNED },
     ];
 
-    expect(getPendingSigners(recipients).map((recipient) => recipient.id)).toEqual([1, 2]);
+    expect(getPendingSigners({ status: DocumentStatus.PENDING, recipients }).map((recipient) => recipient.id)).toEqual([
+      1, 2,
+    ]);
+  });
+
+  it.each([
+    DocumentStatus.DRAFT,
+    DocumentStatus.COMPLETED,
+    DocumentStatus.REJECTED,
+    DocumentStatus.CANCELLED,
+  ])('does not return pending signers for a %s document', (status) => {
+    const recipients = [{ id: 1, role: RecipientRole.SIGNER, signingStatus: SigningStatus.NOT_SIGNED }];
+
+    expect(getPendingSigners({ status, recipients })).toEqual([]);
   });
 
   it('sorts CC recipients after ordered active recipients', () => {

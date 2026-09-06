@@ -1,6 +1,6 @@
 import { isSignatureFieldType } from '@documenso/prisma/guards/is-signature-field';
 import type { Envelope, Field, Recipient } from '@prisma/client';
-import { RecipientRole, SigningStatus } from '@prisma/client';
+import { DocumentStatus, RecipientRole, SigningStatus } from '@prisma/client';
 
 import { NEXT_PUBLIC_WEBAPP_URL } from '../constants/app';
 import { AppError, AppErrorCode } from '../errors/app-error';
@@ -22,7 +22,17 @@ export const isCcRecipient = (recipient: Pick<Recipient, 'role'>) => {
   return recipient.role === RecipientRole.CC;
 };
 
-export const getPendingSigners = <T extends Pick<Recipient, 'role' | 'signingStatus'>>(recipients: T[]): T[] => {
+export const getPendingSigners = <T extends Pick<Recipient, 'role' | 'signingStatus'>>({
+  status,
+  recipients,
+}: {
+  status: DocumentStatus;
+  recipients: T[];
+}): T[] => {
+  if (status !== DocumentStatus.PENDING) {
+    return [];
+  }
+
   return recipients.filter(
     (recipient) => recipient.role !== RecipientRole.CC && recipient.signingStatus === SigningStatus.NOT_SIGNED,
   );

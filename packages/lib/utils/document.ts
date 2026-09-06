@@ -150,7 +150,7 @@ export const mapEnvelopesToDocumentMany = (envelope: MapEnvelopeToDocumentManyOp
       url: envelope.team.url,
     },
     recipients: envelope.recipients.map((recipient) => mapRecipientToLegacyRecipient(recipient, envelope)),
-    pendingSigners: getPendingSigners(envelope.recipients).map((recipient) =>
+    pendingSigners: getPendingSigners({ status: envelope.status, recipients: envelope.recipients }).map((recipient) =>
       mapRecipientToLegacyRecipient(recipient, envelope),
     ),
   };
