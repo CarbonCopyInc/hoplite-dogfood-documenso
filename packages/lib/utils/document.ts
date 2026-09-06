@@ -7,7 +7,7 @@ import type { TDocumentLite, TDocumentMany } from '../types/document';
 import { DEFAULT_DOCUMENT_EMAIL_SETTINGS } from '../types/document-email';
 import { SignatureLevel } from '../types/signature-level';
 import { mapSecondaryIdToDocumentId } from './envelope';
-import { mapRecipientToLegacyRecipient } from './recipients';
+import { getPendingSigners, mapRecipientToLegacyRecipient } from './recipients';
 
 export const isDocumentCompleted = (document: Pick<Envelope, 'status'> | DocumentStatus) => {
   const status = typeof document === 'string' ? document : document.status;
@@ -150,5 +150,8 @@ export const mapEnvelopesToDocumentMany = (envelope: MapEnvelopeToDocumentManyOp
       url: envelope.team.url,
     },
     recipients: envelope.recipients.map((recipient) => mapRecipientToLegacyRecipient(recipient, envelope)),
+    pendingSigners: getPendingSigners({ status: envelope.status, recipients: envelope.recipients }).map((recipient) =>
+      mapRecipientToLegacyRecipient(recipient, envelope),
+    ),
   };
 };
