@@ -71,6 +71,48 @@ You can build the project with:
 npm run build
 ```
 
+### Running the tests
+
+The E2E suite is run with Playwright and needs the database services running and
+migrated first - CI starts them with `npm run dx:up`, `npm run prisma:migrate-dev`
+and `npm run prisma:seed`.
+
+Run the full E2E suite (starts the app on `http://localhost:3000` and runs all
+Playwright specs):
+
+```bash
+npm run test:e2e -w @documenso/app-tests
+```
+
+Run the E2E tests against a dev server you started yourself:
+
+```bash
+npm run test:dev -w @documenso/app-tests
+```
+
+Run the E2E tests in Playwright's interactive UI mode:
+
+```bash
+npm run test-ui:dev -w @documenso/app-tests
+```
+
+Run the unit tests for `@documenso/lib` (Vitest, single run):
+
+```bash
+npm run test -w @documenso/lib
+```
+
+Run the unit tests for `@documenso/signing` (Vitest, watch mode):
+
+```bash
+npm run test -w @documenso/signing
+```
+
+> **Note**
+> `test:e2e` is a turbo task defined in `turbo.json` that builds each package's
+> dependencies first. CI runs `npm run ci`, which builds the Remix app and then
+> runs the E2E suite.
+
 ## AI-Assisted Development with OpenCode
 
 We use [OpenCode](https://opencode.ai) for AI-assisted development. OpenCode provides custom commands and skills to help maintain consistency and streamline common workflows.
