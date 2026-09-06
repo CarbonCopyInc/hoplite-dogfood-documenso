@@ -10,6 +10,7 @@ import { DataTable } from '@documenso/ui/primitives/data-table';
 import { DataTablePagination } from '@documenso/ui/primitives/data-table-pagination';
 import { Skeleton } from '@documenso/ui/primitives/skeleton';
 import { TableCell } from '@documenso/ui/primitives/table';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@documenso/ui/primitives/tooltip';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Loader } from 'lucide-react';
@@ -104,6 +105,12 @@ export const DocumentsTable = ({
         ),
       },
       {
+        header: _(msg`Pending`),
+        accessorKey: 'pendingSigners',
+        cell: ({ row }) => <PendingSignersCell recipients={row.original.pendingSigners} />,
+        size: 90,
+      },
+      {
         header: _(msg`Status`),
         accessorKey: 'status',
         cell: ({ row }) => <DocumentStatus status={row.original.status} />,
@@ -180,6 +187,9 @@ export const DocumentsTable = ({
                 </div>
               </TableCell>
               <TableCell>
+                <Skeleton className="h-4 w-8 rounded-full" />
+              </TableCell>
+              <TableCell>
                 <Skeleton className="h-4 w-20 rounded-full" />
               </TableCell>
               <TableCell>
@@ -202,6 +212,36 @@ export const DocumentsTable = ({
         </div>
       )}
     </div>
+  );
+};
+
+type PendingSignersCellProps = {
+  recipients: DocumentsTableRow['pendingSigners'];
+};
+
+const PendingSignersCell = ({ recipients }: PendingSignersCellProps) => {
+  const { _ } = useLingui();
+
+  if (recipients.length === 0) {
+    return <span className="text-muted-foreground">—</span>;
+  }
+
+  return (
+    <Tooltip>
+      <TooltipTrigger className="font-medium tabular-nums underline decoration-dotted underline-offset-4">
+        {recipients.length}
+        <span className="sr-only"> {_(msg`pending signers`)}</span>
+      </TooltipTrigger>
+
+      <TooltipContent className="max-w-xs space-y-2 p-3 text-foreground">
+        <p className="font-medium">{_(msg`Pending signers`)}</p>
+        <ul className="space-y-1">
+          {recipients.map((recipient) => (
+            <li key={recipient.id}>{recipient.name ? `${recipient.name} (${recipient.email})` : recipient.email}</li>
+          ))}
+        </ul>
+      </TooltipContent>
+    </Tooltip>
   );
 };
 

@@ -165,6 +165,7 @@ export const ZDocumentManySchema = LegacyDocumentSchema.pick({
     email: true,
   }),
   recipients: ZRecipientLiteSchema.array(),
+  pendingSigners: ZRecipientLiteSchema.array(),
   team: TeamSchema.pick({
     id: true,
     url: true,
